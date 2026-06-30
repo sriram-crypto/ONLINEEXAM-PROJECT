@@ -1,0 +1,5 @@
+<!-- Simple white triangle for testing -->
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="100,20 20,180 180,180" fill="#333" stroke="#000" stroke-width="2"/>
+  <text x="100" y="120" text-anchor="middle" font-family="Arial" font-size="12" fill="white">Triangle</text>
+</svg>

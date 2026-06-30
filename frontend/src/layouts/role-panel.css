@@ -1,0 +1,1848 @@
+.role-panel-page {
+  --role-ink: #172033;
+  --role-muted: #647087;
+  --role-paper: #ffffff;
+  --role-line: rgba(23, 32, 51, 0.1);
+  --role-blue: #2754d8;
+  --role-teal: #0f8f83;
+  --role-green: #2f855a;
+  --role-amber: #d98a16;
+  --role-coral: #d84c5f;
+  --role-shadow: 0 18px 48px rgba(24, 42, 72, 0.12);
+  --role-shadow-strong: 0 26px 70px rgba(16, 28, 50, 0.2);
+  min-height: 100vh;
+  padding: 4px 0 30px;
+  color: var(--role-ink);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.role-panel-page.teacher-panel-page {
+  --role-blue: #2563eb;
+  --role-teal: #0f766e;
+  --role-green: #31936a;
+  --role-amber: #d97706;
+  --role-coral: #c2415b;
+}
+
+.role-panel-page.parent-panel-page {
+  --role-blue: #2d6cdf;
+  --role-teal: #0f8f83;
+  --role-green: #2f855a;
+  --role-amber: #d98a16;
+  --role-coral: #d84c5f;
+}
+
+.role-panel-page *,
+.role-panel-page *::before,
+.role-panel-page *::after {
+  box-sizing: border-box;
+}
+
+.role-panel-page button,
+.role-panel-page input,
+.role-panel-page select {
+  font: inherit;
+}
+
+.role-panel-page input,
+.role-panel-page select {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--role-line);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--role-ink);
+  background: #fff;
+  outline: 0;
+}
+
+.role-panel-page button {
+  cursor: pointer;
+}
+
+.role-panel-topbar,
+.role-panel-title,
+.role-panel-tools,
+.role-panel-hero-actions,
+.role-panel-stat-card,
+.role-panel-workspace-head {
+  display: flex;
+  align-items: center;
+}
+
+.role-panel-topbar {
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.role-panel-title {
+  gap: 12px;
+}
+
+.role-panel-title span,
+.role-panel-pill,
+.role-panel-workspace-head small {
+  color: var(--role-teal);
+  font-size: 0.76rem;
+  font-weight: 950;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.role-panel-title h1 {
+  margin: 2px 0 0;
+  color: var(--role-ink);
+  font-size: 1.35rem;
+  line-height: 1.2;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.role-panel-icon-button,
+.role-panel-profile-chip,
+.role-panel-search,
+.role-panel-hero,
+.role-panel-stat-card,
+.role-panel-menu-strip button,
+.role-panel-workspace,
+.role-panel-overview-card {
+  border-radius: 8px;
+}
+
+.role-panel-icon-button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--role-line);
+  color: var(--role-ink);
+  background: var(--role-paper);
+  box-shadow: 0 8px 24px rgba(24, 42, 72, 0.08);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.role-panel-icon-button:hover,
+.role-panel-profile-chip:hover,
+.role-panel-menu-strip button:hover,
+.role-panel-overview-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(39, 84, 216, 0.26);
+  box-shadow: var(--role-shadow);
+}
+
+.role-panel-tools {
+  gap: 10px;
+  min-width: 0;
+}
+
+.role-panel-search {
+  width: min(410px, 38vw);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 13px;
+  border: 1px solid var(--role-line);
+  background: var(--role-paper);
+  box-shadow: 0 8px 24px rgba(24, 42, 72, 0.08);
+}
+
+.role-panel-search .material-icons-round {
+  color: var(--role-muted);
+  font-size: 1.25rem;
+}
+
+.role-panel-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--role-ink);
+  background: transparent;
+  font-size: 0.92rem;
+}
+
+.role-panel-profile-chip {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--role-line);
+  padding: 6px 12px 6px 7px;
+  color: var(--role-ink);
+  background: var(--role-paper);
+  box-shadow: 0 8px 24px rgba(24, 42, 72, 0.08);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.role-panel-profile-chip span {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--role-paper);
+  background: linear-gradient(135deg, var(--role-blue), var(--role-teal));
+  font-weight: 950;
+}
+
+.role-panel-profile-chip strong {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.9rem;
+  font-weight: 900;
+}
+
+.role-panel-hero {
+  position: relative;
+  min-height: 330px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.72fr);
+  gap: 22px;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 28px;
+  overflow: hidden;
+  color: var(--role-paper);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background:
+    linear-gradient(118deg, rgba(16, 28, 50, 0.98) 0%, rgba(36, 61, 112, 0.97) 48%, rgba(15, 105, 98, 0.97) 100%),
+    #101c32;
+  box-shadow: var(--role-shadow-strong);
+}
+
+.teacher-panel-page .role-panel-hero {
+  background:
+    linear-gradient(118deg, rgba(18, 35, 62, 0.98) 0%, rgba(30, 72, 120, 0.97) 48%, rgba(23, 116, 100, 0.97) 100%),
+    #12233e;
+}
+
+.role-panel-hero-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.2;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 48px 48px;
+  transform: perspective(760px) rotateX(58deg) translateY(28%);
+  transform-origin: bottom;
+  animation: rolePanelGridMove 16s linear infinite;
+}
+
+.role-panel-hero-copy,
+.role-panel-hero-visual {
+  position: relative;
+  z-index: 1;
+}
+
+.role-panel-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.role-panel-pill .material-icons-round {
+  color: #9bf4e6;
+  font-size: 1.1rem;
+}
+
+.role-panel-hero h2 {
+  max-width: 780px;
+  margin: 0 0 14px;
+  color: var(--role-paper);
+  font-size: 2.45rem;
+  line-height: 1.05;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.role-panel-hero p {
+  max-width: 650px;
+  margin: 0 0 22px;
+  color: rgba(255, 255, 255, 0.76);
+  font-size: 1rem;
+  line-height: 1.66;
+}
+
+.role-panel-hero-actions {
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.role-panel-hero-actions button {
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 17px;
+  color: var(--role-paper);
+  font-weight: 950;
+  transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.role-panel-hero-actions button:first-child {
+  background: linear-gradient(135deg, var(--role-blue), var(--role-teal));
+  box-shadow: 0 16px 36px rgba(39, 84, 216, 0.34);
+}
+
+.role-panel-hero-actions button:last-child {
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.role-panel-hero-actions button:hover {
+  transform: translateY(-2px);
+}
+
+.role-panel-hero-visual {
+  min-height: 250px;
+}
+
+.role-panel-console {
+  position: absolute;
+  right: 24px;
+  bottom: 20px;
+  width: min(360px, 90%);
+  overflow: hidden;
+  border: 8px solid #dce9f2;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #eefbff, #d9f7ee);
+  box-shadow: 0 24px 54px rgba(0, 0, 0, 0.28);
+  animation: rolePanelFloat 6.4s ease-in-out infinite;
+}
+
+.role-panel-console::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 0 34%, rgba(255, 255, 255, 0.4) 45%, transparent 56% 100%);
+  animation: rolePanelScreenSweep 4s ease-in-out infinite;
+}
+
+.role-panel-console-top {
+  height: 28px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 12px;
+  background: rgba(16, 28, 50, 0.94);
+}
+
+.role-panel-console-top span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--role-coral);
+}
+
+.role-panel-console-top span:nth-child(2) {
+  background: var(--role-amber);
+}
+
+.role-panel-console-top span:nth-child(3) {
+  background: var(--role-green);
+}
+
+.role-panel-console-body {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+}
+
+.role-panel-console-body i,
+.role-panel-console-body b {
+  display: block;
+  border-radius: 999px;
+}
+
+.role-panel-console-body i {
+  height: 10px;
+  background: rgba(23, 32, 51, 0.18);
+}
+
+.role-panel-console-body i:first-child {
+  width: 80%;
+}
+
+.role-panel-console-body i:nth-child(2) {
+  width: 58%;
+}
+
+.role-panel-console-body b {
+  height: 30px;
+  border: 1px solid rgba(23, 32, 51, 0.12);
+  background: rgba(255, 255, 255, 0.62);
+}
+
+.role-panel-console-body b:nth-of-type(2) {
+  background: rgba(15, 143, 131, 0.2);
+}
+
+.role-panel-floating-card {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  gap: 3px;
+  min-width: 112px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  color: var(--role-paper);
+  background: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(16px);
+  animation: rolePanelWidgetFloat 5.6s ease-in-out infinite;
+}
+
+.role-panel-floating-card.one {
+  left: 16px;
+  top: 24px;
+}
+
+.role-panel-floating-card.two {
+  right: 8px;
+  top: 58px;
+  animation-delay: -2.4s;
+}
+
+.role-panel-floating-card span {
+  color: #94f4e9;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.role-panel-floating-card strong {
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 1.25rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.role-panel-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.role-panel-stat-card {
+  min-height: 126px;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--role-line);
+  background: var(--role-paper);
+  box-shadow: 0 12px 34px rgba(24, 42, 72, 0.08);
+}
+
+.role-panel-stat-card > .material-icons-round {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  color: var(--role-paper);
+  background: linear-gradient(135deg, var(--role-blue), var(--role-teal));
+  font-size: 1.55rem;
+}
+
+.role-panel-stat-card small,
+.role-panel-stat-card em {
+  display: block;
+  color: var(--role-muted);
+  font-style: normal;
+}
+
+.role-panel-stat-card small {
+  margin-bottom: 6px;
+  font-size: 0.75rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.role-panel-stat-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--role-ink);
+  font-size: 1.28rem;
+  line-height: 1.1;
+  font-weight: 950;
+}
+
+.role-panel-stat-card em {
+  font-size: 0.82rem;
+  font-weight: 800;
+  line-height: 1.38;
+}
+
+.role-panel-menu-strip {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(124px, 1fr));
+  gap: 10px;
+  margin-bottom: 18px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.admin-panel-page .role-panel-menu-strip {
+  grid-template-columns: repeat(7, minmax(128px, 1fr));
+}
+
+.role-panel-menu-strip button {
+  position: relative;
+  overflow: hidden;
+  min-height: 78px;
+  display: grid;
+  place-items: center;
+  gap: 7px;
+  border: 1px solid var(--role-line);
+  color: var(--role-ink);
+  background: var(--role-paper);
+  box-shadow: 0 10px 28px rgba(24, 42, 72, 0.07);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+.role-panel-menu-strip button .material-icons-round {
+  color: var(--role-blue);
+  font-size: 1.45rem;
+}
+
+.role-panel-menu-strip button strong {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.role-panel-menu-strip button.active {
+  color: var(--role-paper);
+  border-color: rgba(39, 84, 216, 0.18);
+  background:
+    linear-gradient(135deg, rgba(39, 84, 216, 0.96), rgba(15, 143, 131, 0.96)),
+    var(--role-blue);
+  box-shadow: 0 16px 40px rgba(39, 84, 216, 0.24);
+}
+
+.role-panel-menu-strip button.active::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0 32%, rgba(255, 255, 255, 0.28) 46%, transparent 60% 100%),
+    radial-gradient(circle at 18% 18%, rgba(255, 255, 255, 0.2), transparent 34%);
+  animation: rolePanelActiveSweep 3.2s ease-in-out infinite;
+}
+
+.role-panel-menu-strip button.active span,
+.role-panel-menu-strip button.active strong {
+  position: relative;
+  z-index: 1;
+}
+
+.role-panel-menu-strip button.active .material-icons-round {
+  color: var(--role-paper);
+}
+
+.role-panel-workspace {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--role-line);
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(120deg, rgba(39, 84, 216, 0.28), rgba(15, 143, 131, 0.24), rgba(216, 138, 22, 0.18)) border-box;
+  box-shadow: 0 14px 38px rgba(24, 42, 72, 0.08);
+}
+
+.role-panel-workspace::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.48;
+  background:
+    linear-gradient(90deg, rgba(39, 84, 216, 0.05) 1px, transparent 1px),
+    linear-gradient(rgba(15, 143, 131, 0.045) 1px, transparent 1px);
+  background-size: 34px 34px;
+  animation: rolePanelWorkspaceGrid 18s linear infinite;
+}
+
+.role-panel-workspace > * {
+  position: relative;
+  z-index: 1;
+}
+
+.role-panel-workspace-head {
+  gap: 14px;
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--role-line);
+}
+
+.role-panel-workspace-head > .material-icons-round {
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 8px;
+  color: var(--role-paper);
+  background: linear-gradient(135deg, var(--role-blue), var(--role-teal));
+  font-size: 1.55rem;
+}
+
+.role-panel-workspace-head h3 {
+  margin: 4px 0 3px;
+  color: var(--role-ink);
+  font-size: 1.32rem;
+  line-height: 1.2;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.role-panel-workspace-head p {
+  margin: 0;
+  color: var(--role-muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  font-weight: 750;
+}
+
+.role-panel-tool-body {
+  padding: 22px;
+}
+
+.role-panel-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.teacher-panel-page .role-panel-overview-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.role-panel-overview-card {
+  min-height: 168px;
+  display: grid;
+  align-content: start;
+  justify-items: start;
+  gap: 8px;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  padding: 18px;
+  text-align: left;
+  background: #fbfdff;
+  box-shadow: 0 10px 28px rgba(24, 42, 72, 0.06);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.role-panel-overview-card .material-icons-round {
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  color: var(--role-paper);
+  background: linear-gradient(135deg, var(--role-blue), var(--role-teal));
+}
+
+.role-panel-overview-card small,
+.role-panel-overview-card em {
+  display: block;
+  color: var(--role-muted);
+  font-style: normal;
+}
+
+.role-panel-overview-card small {
+  font-size: 0.74rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.role-panel-overview-card strong {
+  color: var(--role-ink);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.role-panel-overview-card em {
+  font-size: 0.82rem;
+  line-height: 1.42;
+  font-weight: 800;
+}
+
+.role-panel-overview-card.ml-alert {
+  min-height: 190px;
+  border-color: rgba(15, 143, 131, 0.18);
+  background: rgba(15, 143, 131, 0.07);
+}
+
+.role-panel-overview-card.ml-alert.danger {
+  border-color: rgba(216, 76, 95, 0.22);
+  background: rgba(216, 76, 95, 0.08);
+}
+
+.role-panel-overview-card.ml-alert.stable {
+  border-color: rgba(47, 133, 90, 0.22);
+  background: rgba(47, 133, 90, 0.08);
+}
+
+.role-panel-overview-card.ml-alert button {
+  min-height: 36px;
+  border: 0;
+  border-radius: 8px;
+  padding: 0 11px;
+  color: #ffffff;
+  background: var(--role-coral);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.role-panel-tool-body .MuiCard-root,
+.role-panel-tool-body .MuiPaper-root {
+  border-radius: 8px !important;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  box-shadow: 0 12px 32px rgba(24, 42, 72, 0.08) !important;
+}
+
+.role-panel-tool-body .MuiTypography-h4,
+.role-panel-tool-body .MuiTypography-h5,
+.role-panel-tool-body .MuiTypography-h6 {
+  color: var(--role-ink);
+  letter-spacing: 0;
+}
+
+.role-panel-tool-body .MuiButton-root {
+  border-radius: 8px !important;
+  text-transform: none !important;
+  font-weight: 850 !important;
+}
+
+.role-panel-tool-body table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  border-radius: 8px;
+  background: var(--role-paper);
+}
+
+.role-panel-tool-body th,
+.role-panel-tool-body td {
+  border-bottom: 1px solid rgba(23, 32, 51, 0.08);
+  padding: 12px 14px;
+  color: var(--role-ink);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  text-align: left;
+}
+
+.role-panel-tool-body th {
+  color: #39506f;
+  background: #f6f9fc;
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.role-panel-tool-body tr:last-child td {
+  border-bottom: 0;
+}
+
+.role-panel-tool-body input,
+.role-panel-tool-body select,
+.role-panel-tool-body textarea {
+  border-radius: 8px;
+}
+
+.role-panel-tool-body .MuiTextField-root,
+.role-panel-tool-body .MuiFormControl-root {
+  min-width: 0;
+}
+
+.role-panel-tool-body .MuiOutlinedInput-root {
+  border-radius: 8px !important;
+}
+
+.teacher-tool {
+  display: grid;
+  gap: 16px;
+  width: 100%;
+}
+
+.teacher-tool *,
+.teacher-tool *::before,
+.teacher-tool *::after {
+  box-sizing: border-box;
+}
+
+.teacher-tool-hero,
+.teacher-tool-card,
+.teacher-tool-filter-card,
+.teacher-table-shell,
+.teacher-question-list,
+.teacher-empty-state {
+  border: 1px solid rgba(23, 32, 51, 0.1);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 14px 38px rgba(24, 42, 72, 0.08);
+}
+
+.teacher-tool-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px;
+  overflow: hidden;
+}
+
+.teacher-tool-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--role-teal);
+  font-size: 0.76rem;
+  line-height: 1;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.teacher-tool-hero h2,
+.teacher-table-title h3,
+.teacher-section-heading h2 {
+  margin: 6px 0 6px;
+  color: var(--role-ink);
+  font-size: 1.24rem;
+  line-height: 1.2;
+  font-weight: 950;
+  letter-spacing: 0;
+}
+
+.teacher-tool-hero p,
+.teacher-section-heading p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--role-muted);
+  line-height: 1.55;
+  font-weight: 800;
+}
+
+.teacher-tool-actions,
+.teacher-table-title,
+.teacher-tool-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.teacher-tool-actions {
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.teacher-action-button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0 14px;
+  font-weight: 950;
+  line-height: 1;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.teacher-action-button .material-icons-round {
+  font-size: 1.08rem;
+}
+
+.teacher-action-button:hover {
+  transform: translateY(-2px);
+}
+
+.teacher-action-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  transform: none;
+}
+
+.teacher-action-button.primary {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--role-blue), var(--role-teal));
+  box-shadow: 0 14px 28px rgba(37, 99, 235, 0.22);
+}
+
+.teacher-action-button.secondary {
+  color: var(--role-ink);
+  border-color: rgba(23, 32, 51, 0.12);
+  background: #ffffff;
+}
+
+.teacher-action-button.success {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--role-green), var(--role-teal));
+}
+
+.teacher-action-button.warning {
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--role-amber), #b75f0b);
+}
+
+.teacher-action-button.danger {
+  color: #ffffff;
+  background: var(--role-coral);
+}
+
+.teacher-tool-stat-strip {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.teacher-tool-stat-strip article {
+  min-height: 92px;
+  display: grid;
+  align-content: center;
+  gap: 6px;
+  border: 1px solid rgba(23, 32, 51, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 28px rgba(24, 42, 72, 0.07);
+}
+
+.teacher-tool-stat-strip strong {
+  color: var(--role-ink);
+  font-size: 1.38rem;
+  line-height: 1;
+  font-weight: 950;
+}
+
+.teacher-tool-stat-strip span {
+  color: var(--role-muted);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.teacher-tool-stat-strip small {
+  color: var(--role-muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.teacher-section-heading {
+  margin-bottom: 16px;
+}
+
+.teacher-tool-card {
+  padding: 20px;
+}
+
+.teacher-tool-card.MuiPaper-root,
+.teacher-tool .MuiPaper-root.teacher-tool-card {
+  border-radius: 8px !important;
+  box-shadow: 0 14px 38px rgba(24, 42, 72, 0.08) !important;
+}
+
+.teacher-tool .MuiAccordion-root {
+  overflow: hidden;
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  border-radius: 8px !important;
+  box-shadow: none !important;
+}
+
+.teacher-tool .MuiAccordionSummary-root {
+  min-height: 58px;
+  background: #f6f9fc !important;
+}
+
+.teacher-tool .MuiAccordionSummary-content .MuiTypography-root {
+  color: var(--role-ink);
+  font-size: 0.95rem;
+  font-weight: 950 !important;
+}
+
+.teacher-tool .MuiTabs-root {
+  min-height: 44px;
+  border: 1px solid rgba(23, 32, 51, 0.1);
+  border-radius: 8px;
+  padding: 4px;
+  background: #f6f9fc;
+}
+
+.teacher-tool .MuiTab-root {
+  min-height: 36px;
+  border-radius: 8px;
+  text-transform: none;
+  font-weight: 900;
+}
+
+.teacher-tool .Mui-selected {
+  color: var(--role-blue) !important;
+  background: #ffffff;
+}
+
+.teacher-tool .MuiTabs-indicator {
+  display: none;
+}
+
+.teacher-tool .MuiButton-root,
+.teacher-tool button:not(.teacher-action-button) {
+  border-radius: 8px !important;
+  text-transform: none !important;
+  font-weight: 850 !important;
+}
+
+.teacher-tool .MuiCard-root {
+  border: 1px solid rgba(23, 32, 51, 0.08);
+  border-radius: 8px !important;
+  box-shadow: 0 10px 28px rgba(24, 42, 72, 0.06) !important;
+}
+
+.teacher-tool .MuiDataGrid-root {
+  border: 1px solid rgba(23, 32, 51, 0.08) !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.teacher-tool .MuiDataGrid-columnHeaders {
+  color: #39506f;
+  background: #f6f9fc;
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.teacher-tool-filter-card,
+.teacher-filter-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.teacher-tool-filter-card {
+  padding: 16px;
+}
+
+.teacher-filter-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.teacher-filter-grid.two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.teacher-filter-grid label,
+.teacher-file-input {
+  display: grid;
+  gap: 7px;
+}
+
+.teacher-filter-grid label span,
+.teacher-file-input span {
+  color: var(--role-ink);
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.teacher-file-input input,
+.teacher-tool input[type="file"] {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid rgba(23, 32, 51, 0.12);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--role-ink);
+  background: #fbfdff;
+}
+
+.teacher-result-count {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--role-ink);
+  background: rgba(15, 118, 110, 0.08);
+  font-weight: 900;
+}
+
+.teacher-mode-toggle {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.teacher-question-list {
+  max-height: 360px;
+  overflow: auto;
+  padding: 12px;
+}
+
+.teacher-question-option {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  border-bottom: 1px solid rgba(23, 32, 51, 0.08);
+  padding: 10px 0;
+  color: var(--role-ink);
+  font-weight: 800;
+}
+
+.teacher-question-option:last-child {
+  border-bottom: 0;
+}
+
+.teacher-question-option input {
+  width: 18px;
+  min-height: 18px;
+  margin-top: 2px;
+}
+
+.teacher-table-shell {
+  overflow: hidden;
+}
+
+.teacher-table-title {
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(23, 32, 51, 0.08);
+}
+
+.teacher-table-scroll {
+  overflow-x: auto;
+}
+
+.teacher-data-table {
+  min-width: 900px;
+}
+
+.teacher-data-table td strong,
+.teacher-data-table td small {
+  display: block;
+}
+
+.teacher-data-table td strong {
+  color: var(--role-ink);
+  font-weight: 950;
+}
+
+.teacher-data-table td small {
+  margin-top: 3px;
+  color: var(--role-muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.teacher-status-pill {
+  min-height: 28px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+  padding: 0 9px;
+  color: #ffffff;
+  background: var(--role-blue);
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: capitalize;
+}
+
+.teacher-status-pill.active,
+.teacher-status-pill.completed,
+.teacher-status-pill.submitted,
+.teacher-status-pill.verified {
+  background: var(--role-green);
+}
+
+.teacher-status-pill.in_progress,
+.teacher-status-pill.scheduled,
+.teacher-status-pill.pending,
+.teacher-status-pill.requested {
+  background: var(--role-amber);
+}
+
+.teacher-status-pill.cancelled,
+.teacher-status-pill.inactive,
+.teacher-status-pill.not_started,
+.teacher-status-pill.blocked {
+  background: var(--role-coral);
+}
+
+.parent-review-message {
+  width: fit-content;
+  max-width: 100%;
+  justify-content: flex-start;
+}
+
+.parent-review-table {
+  min-width: 1120px;
+}
+
+.parent-review-table input {
+  min-width: 240px;
+}
+
+.parent-review-actions {
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.parent-review-actions .teacher-action-button {
+  min-height: 36px;
+  padding: 0 10px;
+}
+
+.student-analytics-message {
+  width: fit-content;
+  max-width: 100%;
+  justify-content: flex-start;
+}
+
+.student-visual-analytics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.student-chart-card {
+  display: grid;
+  gap: 14px;
+  min-height: 220px;
+}
+
+.student-chart-card.wide {
+  grid-column: span 2;
+}
+
+.student-chart-head {
+  min-width: 0;
+}
+
+.student-chart-head h3 {
+  margin: 4px 0 0;
+  color: var(--role-ink);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.student-risk-stack {
+  display: flex;
+  width: 100%;
+  height: 18px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eef4;
+}
+
+.student-risk-stack span {
+  display: block;
+  min-width: 0;
+  height: 100%;
+}
+
+.student-risk-legend {
+  display: grid;
+  gap: 8px;
+}
+
+.student-risk-legend span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--role-muted);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.student-risk-legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex: 0 0 auto;
+}
+
+.student-risk-legend strong {
+  color: var(--role-ink);
+  font-size: 0.9rem;
+}
+
+.risk-high,
+.student-score-band-chart .band-critical span {
+  background: var(--role-coral);
+}
+
+.risk-medium,
+.student-score-band-chart .band-developing span {
+  background: var(--role-amber);
+}
+
+.risk-low,
+.student-score-band-chart .band-strong span {
+  background: var(--role-green);
+}
+
+.student-score-band-chart .band-steady span {
+  background: var(--role-blue);
+}
+
+.student-score-band-chart {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: end;
+  gap: 10px;
+  min-height: 154px;
+}
+
+.student-score-band-chart article {
+  display: grid;
+  grid-template-rows: 112px auto auto;
+  gap: 7px;
+  min-width: 0;
+  text-align: center;
+}
+
+.student-score-band-chart article > div {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #eef3f8;
+}
+
+.student-score-band-chart span {
+  width: 100%;
+  display: block;
+  border-radius: 8px 8px 0 0;
+}
+
+.student-score-band-chart strong {
+  color: var(--role-ink);
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.student-score-band-chart small {
+  color: var(--role-muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.student-bar-list {
+  display: grid;
+  gap: 11px;
+}
+
+.student-bar-list > div {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.9fr) minmax(120px, 1.4fr) auto;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.student-bar-list span {
+  min-width: 0;
+}
+
+.student-bar-list strong,
+.student-bar-list small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-bar-list strong {
+  color: var(--role-ink);
+  font-size: 0.86rem;
+  font-weight: 950;
+}
+
+.student-bar-list small {
+  color: var(--role-muted);
+  font-size: 0.74rem;
+  font-weight: 850;
+}
+
+.student-bar-list i {
+  width: 100%;
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eef4;
+}
+
+.student-bar-list i b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--role-blue), var(--role-green));
+}
+
+.student-bar-list em {
+  min-width: 44px;
+  color: var(--role-blue);
+  font-style: normal;
+  font-size: 0.8rem;
+  font-weight: 950;
+  text-align: right;
+}
+
+.student-analytics-grid,
+.student-detail-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.student-analytics-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.38fr);
+  align-items: start;
+}
+
+.student-analytics-side {
+  display: grid;
+  gap: 16px;
+}
+
+.student-analytics-table {
+  min-width: 1180px;
+}
+
+.student-analytics-table tr.selected td {
+  background: rgba(39, 84, 216, 0.05);
+}
+
+.student-weak-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.student-weak-pills span,
+.student-weak-pills em {
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 8px;
+  padding: 0 8px;
+  color: #9a3412;
+  background: rgba(217, 138, 22, 0.14);
+  font-size: 0.74rem;
+  font-style: normal;
+  font-weight: 900;
+}
+
+.student-weak-pills em {
+  color: #176c45;
+  background: rgba(47, 133, 90, 0.12);
+}
+
+.teacher-status-pill.risk-low {
+  background: var(--role-green);
+}
+
+.teacher-status-pill.risk-medium {
+  background: var(--role-amber);
+}
+
+.teacher-status-pill.risk-high {
+  background: var(--role-coral);
+}
+
+.student-subject-heatmap,
+.student-subject-detail-list,
+.student-exam-mini-list,
+.student-exam-history {
+  display: grid;
+  gap: 10px;
+}
+
+.student-subject-heatmap > div,
+.student-subject-detail-list article,
+.student-exam-mini-list article,
+.student-exam-history article {
+  display: grid;
+  gap: 7px;
+  border: 1px solid rgba(23, 32, 51, 0.1);
+  border-radius: 8px;
+  padding: 11px;
+  background: #ffffff;
+}
+
+.student-subject-heatmap span,
+.student-subject-detail-list article > div,
+.student-exam-mini-list article,
+.student-exam-history article {
+  min-width: 0;
+}
+
+.student-subject-heatmap strong,
+.student-subject-heatmap small,
+.student-subject-detail-list strong,
+.student-subject-detail-list small,
+.student-exam-mini-list strong,
+.student-exam-mini-list small,
+.student-exam-history strong,
+.student-exam-history small {
+  display: block;
+}
+
+.student-subject-heatmap strong,
+.student-subject-detail-list strong,
+.student-exam-mini-list strong,
+.student-exam-history strong {
+  overflow: hidden;
+  color: var(--role-ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 950;
+}
+
+.student-subject-heatmap small,
+.student-subject-detail-list small,
+.student-exam-mini-list small,
+.student-exam-history small {
+  color: var(--role-muted);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.student-subject-heatmap i,
+.student-subject-detail-list i {
+  width: 100%;
+  height: 8px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e8eef4;
+}
+
+.student-subject-heatmap i b,
+.student-subject-detail-list i b {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--role-coral), var(--role-amber), var(--role-green));
+}
+
+.student-subject-heatmap em,
+.student-subject-detail-list article > span,
+.student-exam-mini-list span,
+.student-exam-history span {
+  color: var(--role-blue);
+  font-style: normal;
+  font-weight: 950;
+}
+
+.student-detail-card {
+  padding: 0;
+}
+
+.student-detail-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(280px, 0.75fr);
+  padding: 20px;
+}
+
+.student-detail-grid h4 {
+  margin: 0 0 12px;
+  color: var(--role-ink);
+  font-size: 0.98rem;
+  font-weight: 950;
+}
+
+.student-recommendation-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.student-recommendation-list li {
+  border: 1px solid rgba(15, 143, 131, 0.18);
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: #176c45;
+  background: rgba(15, 143, 131, 0.08);
+  font-weight: 900;
+  line-height: 1.45;
+}
+
+.student-timeline-bars {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: end;
+  gap: 8px;
+  min-height: 152px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(23, 32, 51, 0.1);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.student-timeline-bars article {
+  display: grid;
+  grid-template-rows: 86px auto auto;
+  gap: 6px;
+  min-width: 0;
+  text-align: center;
+}
+
+.student-timeline-bars article span {
+  align-self: end;
+  width: 100%;
+  display: block;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(180deg, var(--role-blue), var(--role-green));
+}
+
+.student-timeline-bars article strong,
+.student-timeline-bars article small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-timeline-bars article strong {
+  color: var(--role-ink);
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.student-timeline-bars article small {
+  color: var(--role-muted);
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.teacher-empty-state {
+  display: grid;
+  place-items: center;
+  min-height: 140px;
+  padding: 24px;
+  color: var(--role-muted);
+  text-align: center;
+  font-weight: 900;
+}
+
+@keyframes rolePanelGridMove {
+  from { background-position: 0 0; }
+  to { background-position: 48px 48px; }
+}
+
+@keyframes rolePanelFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes rolePanelWidgetFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes rolePanelScreenSweep {
+  0%, 100% { transform: translateX(-110%); }
+  55% { transform: translateX(110%); }
+}
+
+@keyframes rolePanelActiveSweep {
+  0%, 100% { transform: translateX(-70%); opacity: 0.45; }
+  50% { transform: translateX(70%); opacity: 0.9; }
+}
+
+@keyframes rolePanelWorkspaceGrid {
+  from { background-position: 0 0; }
+  to { background-position: 34px 34px; }
+}
+
+@media (max-width: 1280px) {
+  .role-panel-hero {
+    grid-template-columns: 1fr;
+  }
+
+  .role-panel-hero-visual {
+    min-height: 280px;
+  }
+
+  .role-panel-console {
+    right: 50%;
+    transform: translateX(50%);
+    animation-name: rolePanelFloatCentered;
+  }
+
+  .role-panel-stat-grid,
+  .role-panel-overview-grid,
+  .teacher-panel-page .role-panel-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .teacher-tool-stat-strip,
+  .teacher-filter-grid,
+  .student-visual-analytics,
+  .student-analytics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .student-chart-card.wide {
+    grid-column: span 1;
+  }
+
+  .student-analytics-grid,
+  .student-detail-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@keyframes rolePanelFloatCentered {
+  0%, 100% { transform: translateX(50%) translateY(0); }
+  50% { transform: translateX(50%) translateY(-12px); }
+}
+
+@media (max-width: 900px) {
+  .role-panel-topbar,
+  .role-panel-tools,
+  .teacher-tool-hero,
+  .teacher-table-title,
+  .teacher-tool-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .role-panel-search {
+    width: 100%;
+  }
+
+  .role-panel-profile-chip {
+    justify-content: center;
+  }
+
+  .role-panel-hero h2 {
+    font-size: 2rem;
+  }
+
+  .role-panel-menu-strip,
+  .admin-panel-page .role-panel-menu-strip {
+    grid-template-columns: repeat(8, 132px);
+  }
+
+  .admin-panel-page .role-panel-menu-strip {
+    grid-template-columns: repeat(7, 132px);
+  }
+
+  .role-panel-workspace-head {
+    align-items: flex-start;
+  }
+
+  .teacher-tool-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 620px) {
+  .role-panel-page {
+    padding-top: 0;
+  }
+
+  .role-panel-title h1 {
+    font-size: 1.1rem;
+  }
+
+  .role-panel-hero {
+    padding: 22px;
+  }
+
+  .role-panel-hero h2 {
+    font-size: 1.65rem;
+  }
+
+  .role-panel-hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .role-panel-hero-actions button {
+    width: 100%;
+  }
+
+  .role-panel-stat-grid,
+  .role-panel-overview-grid,
+  .teacher-panel-page .role-panel-overview-grid,
+  .teacher-tool-stat-strip,
+  .student-visual-analytics,
+  .teacher-filter-grid,
+  .teacher-filter-grid.two,
+  .teacher-mode-toggle {
+    grid-template-columns: 1fr;
+  }
+
+  .student-bar-list > div {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .student-bar-list em {
+    text-align: left;
+  }
+
+  .student-score-band-chart,
+  .student-timeline-bars {
+    gap: 6px;
+  }
+
+  .teacher-action-button,
+  .teacher-tool-actions .teacher-action-button {
+    width: 100%;
+  }
+
+  .role-panel-hero-visual {
+    min-height: 230px;
+    overflow: hidden;
+  }
+
+  .role-panel-floating-card {
+    display: none;
+  }
+
+  .role-panel-tool-body {
+    padding: 16px;
+  }
+
+  .role-panel-workspace-head {
+    padding: 16px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .role-panel-page *,
+  .role-panel-page *::before,
+  .role-panel-page *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}

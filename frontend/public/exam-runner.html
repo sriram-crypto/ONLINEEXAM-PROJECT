@@ -1,0 +1,640 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Exam Runner</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:18px;background:#f3f6fb;color:#1f2937}
+    .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+    .card{background:#fff;padding:18px;border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+    .options label{display:block;padding:12px;border-radius:8px;margin:8px 0;border:1px solid #e6e6e6;cursor:pointer}
+    .question-image{display:block;margin-top:8px;max-width:100%;width:auto;max-height:400px;height:auto;object-fit:contain}
+    .controls{display:flex;justify-content:center;gap:10px;margin-top:14px}
+    button{padding:8px 12px;border-radius:6px;border:0;background:#06b6d4;color:#fff;cursor:pointer}
+    button[disabled]{opacity:0.5;cursor:not-allowed}
+    .small{font-size:13px;color:#6b7280}
+  </style>
+</head>
+<body>
+  <div class="top">
+    <div><strong id="examTitle">Exam</strong></div>
+    <div><span class="small">Time Left: </span><span id="timer" style="font-weight:700">--:--</span></div>
+  </div>
+
+  <div id="root" class="card" style="position:relative;max-height:calc(100vh - 80px);overflow-y:auto;">
+    <div id="qmeta" class="small" style="margin-bottom:10px">Q <span id="qIndex">0</span> of <span id="qTotal">0</span></div>
+    <div id="qText" style="min-height:60px;margin-bottom:6px;line-height:1.6;"></div>
+    <div id="qImage"></div>
+    <div id="options" class="options"></div>
+    <div class="controls">
+      <button id="prevBtn">Previous</button>
+      <button id="nextBtn">Next</button>
+      <button id="submitBtn" style="display:none;background:#10b981;">Submit</button>
+    </div>
+    <div id="notice" class="small" style="margin-top:10px;color:#9b1745"></div>
+  </div>
+
+  <script>
+    // receive shipped data from opener
+    window.__QUESTIONS = [];
+    window.__EXAM_META = {};
+    window.__SUBMISSION_ID = null;
+    window.__STUDENT_ID = null;
+    window.addEventListener('message', function(ev){
+      try {
+        const payload = ev.data || {};
+        if (payload.type === 'exam-data' && payload.questions) {
+          window.__QUESTIONS = payload.questions || [];
+          window.__EXAM_META = payload.exam || {};
+          window.__SUBMISSION_ID = payload.submission_id || null;
+          window.__STUDENT_ID = payload.student_id || null;
+          document.getElementById('examTitle').textContent = payload.exam && payload.exam.title ? payload.exam.title : 'Exam';
+          initRunner();
+          return;
+        }
+        // other message types (navigate/save/submit) are handled inside initRunner once it's initialized
+      } catch(e) { console.error('runner message handler', e); }
+    }, false);
+
+    // Get backend URL from environment or use default
+    const BACKEND_URL = window.BACKEND_URL || 'http://localhost:5000';
+
+    function normalizeSrc(src){
+      if(!src) return null;
+      if(typeof src !== 'string') return null;
+      src = src.trim();
+      // If already absolute URL, return as-is
+      if (src.startsWith('data:') || src.startsWith('http:') || src.startsWith('https:') || src.startsWith('//')) return src;
+      // If starts with /uploads, prepend backend URL
+      if (src.startsWith('/uploads')) return BACKEND_URL + src;
+      // If starts with /, assume it's backend path
+      if (src.startsWith('/')) return BACKEND_URL + src;
+      // Otherwise, assume it's just filename, add full path
+      return BACKEND_URL + '/uploads/images/' + src.replace(/^.*[\\/]/, '');
+    }
+
+    function maybeDataUrlFromBlob(s){
+      if(!s || typeof s !== 'string') return null;
+      const str = s.trim();
+      if (str.startsWith('data:')) return str;
+      if (/^[A-Za-z0-9+\/=]+$/.test(str) && str.length > 10) return 'data:image/png;base64,' + str.replace(/\s+/g,'');
+      return null;
+    }
+
+    function initRunner(){
+      try {
+        const qIndexEl = document.getElementById('qIndex');
+        const qTotalEl = document.getElementById('qTotal');
+        const qText = document.getElementById('qText');
+        const qImageWrap = document.getElementById('qImage');
+        const optionsEl = document.getElementById('options');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const timerEl = document.getElementById('timer');
+        const notice = document.getElementById('notice');
+
+        const questions = Array.isArray(window.__QUESTIONS) ? window.__QUESTIONS : [];
+        let index = 0;
+        let answers = {};
+
+        const examMeta = window.__EXAM_META || {};
+        let timeLeft = (examMeta.duration_ms) || (questions.length && questions[0] && (questions[0].exam_duration_minutes ? questions[0].exam_duration_minutes*60*1000 : null)) || (20*60*1000);
+
+        function formatTime(ms){ if(ms==null) return '--:--'; const s=Math.floor(ms/1000), m=Math.floor(s/60), sec=s%60; return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0'); }
+        function startTimer(){ if(!timerEl) return; timerEl.textContent = formatTime(timeLeft); window._examTimer = setInterval(()=>{ timeLeft = Math.max(0,timeLeft-1000); timerEl.textContent = formatTime(timeLeft); if(timeLeft===0) autoSubmit('time-expired'); },1000); }
+
+        function makeImage(src){
+          const nsrc = normalizeSrc(src);
+          if(!nsrc) return null;
+          const img = document.createElement('img');
+          img.src = nsrc;
+          img.alt = '';
+          img.className = 'question-image';
+          img.onerror = function(){ this.style.display='none'; };
+          return img;
+        }
+
+        // Apply styling to images within question text after rendering HTML
+        function styleQuestionImages(){
+          if(!qText) return;
+          const imgs = qText.querySelectorAll('img');
+          imgs.forEach(img => {
+            img.style.display = 'block';
+            img.style.maxWidth = '100%';
+            img.style.width = 'auto';
+            img.style.maxHeight = '400px';
+            img.style.height = 'auto';
+            img.style.marginTop = '8px';
+            img.style.marginBottom = '8px';
+            img.style.objectFit = 'contain';
+            // Fix relative paths
+            if(img.src && !img.src.startsWith('http') && !img.src.startsWith('data:')){
+              img.src = normalizeSrc(img.getAttribute('src'));
+            }
+          });
+        }
+
+
+        function renderQuestion(i){
+          index = i;
+          const q = questions[index] || {};
+          if(qIndexEl) qIndexEl.textContent = (index + 1);
+          if(qText) {
+            const questionContent = q.question || q.question_text || '';
+            // Use innerHTML to render HTML tags (like <img>), but sanitize first
+            qText.innerHTML = questionContent;
+            styleQuestionImages(); // Apply styling to images in question text
+          }
+          if(qImageWrap) qImageWrap.innerHTML = '';
+          const qBlobUrl = maybeDataUrlFromBlob(q.question_image_blob || q.question_image_base64 || q.image || '');
+          const qImgField = q.question_image || q.question_image_path || q.question_image_url || null;
+          const qImgSrc = qBlobUrl || qImgField;
+          const qImgEl = makeImage(qImgSrc);
+          if(qImgEl && qImageWrap) qImageWrap.appendChild(qImgEl);
+
+
+          if(optionsEl) optionsEl.innerHTML = '';
+          let opts = [];
+          
+          // Format 1: options array (from transformed API or React format)
+          if (Array.isArray(q.options) && q.options.length) {
+            opts = q.options.map((o, idx) => {
+              let text = '';
+              let image = null;
+              
+              if (typeof o === 'string') {
+                text = o;
+              } else if (o && typeof o === 'object') {
+                // Handle object format: {value: "text", label: "text"} or {text: "text"}
+                text = o.label || o.value || o.text || '';
+                
+                // Check for image in the option object
+                const blobUrl = maybeDataUrlFromBlob(o.image_blob || o.image_base64 || '');
+                const imgField = o.image || o.image_path || o.image_url || null;
+                image = blobUrl || (imgField ? normalizeSrc(imgField) : null);
+              }
+              
+              return { 
+                text, 
+                image,
+                label: String.fromCharCode(65 + idx) // A, B, C, D
+              };
+            }).filter(opt => opt.text || opt.image); // Include options with text or image
+          } 
+          // Format 2: individual option fields (option1, option2, etc.)
+          else {
+            for (let k = 1; k <= 4; k++) {
+              let text = q['option' + k] || '';
+              
+              // Handle case where option fields might contain objects
+              if (typeof text === 'object' && text !== null) {
+                text = text.label || text.value || text.text || '';
+              }
+              
+              const blobUrl = maybeDataUrlFromBlob(q['option' + k + '_image_blob'] || q['option' + k + '_image_base64'] || '');
+              const imgField = q['option' + k + '_image'] || q['option' + k + '_image_path'] || q['option' + k + '_image_url'] || null;
+              const img = blobUrl || imgField ? (blobUrl || normalizeSrc(imgField)) : null;
+              
+              if (text || img) {
+                opts.push({ 
+                  text, 
+                  image: img,
+                  label: String.fromCharCode(64 + k) // A, B, C, D
+                });
+              }
+            }
+          }
+          // Track selected answer and correct answer
+          let selectedAnswer = answers[q.id || q.question_id || ('q' + index)];
+          const correctAnswer = q.correct_option || q.correctAnswer || q.answer || '';
+
+          // Determine if MSQ (multiple select) or MCQ (single choice)
+          // Use q.type === 'MSQ' for multiple select, else default to MCQ
+          const isMSQ = (q.type && String(q.type).toUpperCase() === 'MSQ');
+
+          if (isMSQ) {
+            // Multiple select: checkboxes
+            if (!Array.isArray(selectedAnswer)) selectedAnswer = [];
+            opts.forEach((opt, idx) => {
+              const lbl = document.createElement('label');
+              lbl.style.display = 'block';
+              lbl.style.margin = '6px 0';
+              lbl.style.padding = '10px';
+              lbl.style.borderRadius = '6px';
+              lbl.style.cursor = 'pointer';
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.name = 'opt';
+              checkbox.value = opt.text || ('__opt_' + idx);
+              checkbox.style.marginRight = '8px';
+              checkbox.checked = Array.isArray(selectedAnswer) && selectedAnswer.includes(opt.text || checkbox.value);
+              checkbox.addEventListener('change', () => {
+                let arr = Array.isArray(answers[q.id || q.question_id || ('q' + index)]) ? [...answers[q.id || q.question_id || ('q' + index)]] : [];
+                if (checkbox.checked) {
+                  if (!arr.includes(opt.text || checkbox.value)) arr.push(opt.text || checkbox.value);
+                } else {
+                  arr = arr.filter(v => v !== (opt.text || checkbox.value));
+                }
+                answers[q.id || q.question_id || ('q' + index)] = arr;
+                selectedAnswer = arr;
+                highlightSelected();
+                try {
+                  parent.postMessage({
+                    type: 'answer-update',
+                    index: index,
+                    question_index: index,
+                    question_id: q.id || q.question_id || null,
+                    answered: arr.length > 0,
+                    status: arr.length > 0 ? 'answered' : 'not_answered',
+                    student_answer: arr,
+                    submission_id: window.__SUBMISSION_ID || null,
+                    student_id: window.__STUDENT_ID || null
+                  }, window.location.origin);
+                } catch (e) { /* ignore */ }
+              });
+              checkbox.style.pointerEvents = 'auto';
+              lbl.appendChild(checkbox);
+              
+              // Add option label and text
+              const optionTextSpan = document.createElement('span');
+              optionTextSpan.style.fontWeight = '600';
+              optionTextSpan.style.marginRight = '4px';
+              optionTextSpan.textContent = opt.label + '.';
+              lbl.appendChild(optionTextSpan);
+              
+              if (opt.text) lbl.appendChild(document.createTextNode(' ' + opt.text));
+              if (opt.image) {
+                const img = document.createElement('img');
+                img.src = opt.image;
+                img.alt = '';
+                img.style.display = 'block';
+                img.style.maxWidth = '100%';
+                img.style.width = 'auto';
+                img.style.maxHeight = '300px';
+                img.style.height = 'auto';
+                img.style.marginTop = '8px';
+                img.style.objectFit = 'contain';
+                img.onerror = function(){ this.style.display='none'; };
+                lbl.appendChild(img);
+              }
+              if (optionsEl) optionsEl.appendChild(lbl);
+            });
+          } else {
+            // MCQ: single choice (radio)
+            opts.forEach((opt, idx) => {
+              const lbl = document.createElement('label');
+              lbl.style.display = 'block';
+              lbl.style.margin = '6px 0';
+              lbl.style.padding = '10px';
+              lbl.style.borderRadius = '6px';
+              lbl.style.cursor = 'pointer';
+              const radio = document.createElement('input');
+              radio.type = 'radio';
+              // Use unique name based on question ID to ensure only one option is selected per question
+              radio.name = 'opt_' + (q.id || ('q' + index));
+              radio.value = opt.text || ('__opt_' + idx);
+              radio.style.marginRight = '8px';
+              radio.checked = answers[q.id || ('q' + index)] === (opt.text || radio.value);
+              radio.addEventListener('change', () => {
+                answers[q.id || q.question_id || ('q' + index)] = opt.text || radio.value;
+                selectedAnswer = opt.text || radio.value;
+                highlightSelected();
+                try {
+                  parent.postMessage({
+                    type: 'answer-update',
+                    index: index,
+                    question_index: index,
+                    question_id: q.id || q.question_id || null,
+                    answered: true,
+                    status: 'answered',
+                    student_answer: opt.text || radio.value,
+                    submission_id: window.__SUBMISSION_ID || null,
+                    student_id: window.__STUDENT_ID || null
+                  }, window.location.origin);
+                } catch (e) { /* ignore */ }
+              });
+              radio.style.pointerEvents = 'auto';
+              lbl.appendChild(radio);
+              
+              // Add option label and text
+              const optionTextSpan = document.createElement('span');
+              optionTextSpan.style.fontWeight = '600';
+              optionTextSpan.style.marginRight = '4px';
+              optionTextSpan.textContent = opt.label + '.';
+              lbl.appendChild(optionTextSpan);
+              
+              if (opt.text) lbl.appendChild(document.createTextNode(' ' + opt.text));
+              if (opt.image) {
+                const img = document.createElement('img');
+                img.src = opt.image;
+                img.alt = '';
+                img.style.display = 'block';
+                img.style.maxWidth = '100%';
+                img.style.width = 'auto';
+                img.style.maxHeight = '300px';
+                img.style.height = 'auto';
+                img.style.marginTop = '8px';
+                img.style.objectFit = 'contain';
+                img.onerror = function(){ this.style.display='none'; };
+                lbl.appendChild(img);
+              }
+              if (optionsEl) optionsEl.appendChild(lbl);
+            });
+          }
+
+          highlightSelected();
+          if(prevBtn) prevBtn.disabled = (index === 0);
+          if(nextBtn) {
+            nextBtn.style.display = (index < questions.length - 1) ? '' : 'none';
+            nextBtn.disabled = false;
+          }
+          if(submitBtn) submitBtn.style.display = (index === questions.length - 1) ? '' : 'none';
+          if(qTotalEl) qTotalEl.textContent = questions.length;
+
+          // notify parent that this question was visited/changed
+          try {
+            const curStatus = isMSQ
+              ? (Array.isArray(answers[q.id || ('q' + index)]) && answers[q.id || ('q' + index)].length > 0 ? 'answered' : 'not_answered')
+              : (answers[q.id || ('q' + index)] ? 'answered' : 'not_answered');
+            parent.postMessage({ type: 'question-visited', index: index, status: curStatus, question_id: q.id || null, submission_id: window.__SUBMISSION_ID || null, student_id: window.__STUDENT_ID || null }, window.location.origin);
+          } catch (e) { /* ignore */ }
+        }
+
+        function highlightSelected(){
+          const q = questions[index]||{};
+          const sel = answers[q.id || ('q' + index)];
+          if(!optionsEl) return;
+          Array.from(optionsEl.querySelectorAll('label')).forEach(lbl=>{
+            const input = lbl.querySelector('input');
+            if (input && (input.value === sel || (answers[q.id || ('q'+index)] && input.checked))) {
+              lbl.style.border = '2px solid #06b6d4';
+              lbl.style.background = '#ecfeff';
+            } else {
+              lbl.style.border = '1px solid #e6e6e6';
+              lbl.style.background = '#fff';
+            }
+          });
+        }
+
+        // attach handlers using addEventListener
+        if(prevBtn) {
+          prevBtn.style.pointerEvents = 'auto';
+          prevBtn.addEventListener('click', ()=>{ renderQuestion(Math.max(0, index-1)); });
+        }
+        if(nextBtn) {
+          nextBtn.style.pointerEvents = 'auto';
+          nextBtn.addEventListener('click', ()=>{ renderQuestion(Math.min(questions.length-1, index+1)); });
+        }
+        if(submitBtn) {
+          submitBtn.style.pointerEvents = 'auto';
+          submitBtn.addEventListener('click', ()=>{
+            // Confirm before submitting
+            if (window.confirm('Do you want to submit?')) {
+              // Send the answers to the parent for submission
+              try {
+                const submissionMsg = {
+                  type: 'exam-submitted',
+                  examId: examMeta.exam_id || null,
+                  submission_id: window.__SUBMISSION_ID || null,
+                  student_id: window.__STUDENT_ID || null,
+                  answers
+                };
+                parent.postMessage(submissionMsg, window.location.origin);
+              } catch(e){}
+            }
+          });
+        }
+        // Submit is handled by the parent panel via postMessage (request-submit) so the in-runner submit button was removed.
+
+        let submitted = false;
+        async function autoSubmit(reason){
+          if(submitted) return;
+          submitted = true;
+          if(notice) notice.textContent = 'Submitting...';
+
+          const payloadToServer = {
+            exam_id: examMeta.exam_id || null,
+            submission_id: window.__SUBMISSION_ID || null,
+            student_id: window.__STUDENT_ID || null,
+            answers: answers,
+            reason
+          };
+
+          // For practice, just notify parent
+          const submissionMsg = {
+            type: 'exam-submitted',
+            examId: examMeta.exam_id || null,
+            submission_id: window.__SUBMISSION_ID || null,
+            student_id: window.__STUDENT_ID || null,
+            reason,
+            answers
+          };
+          try {
+            parent.postMessage(submissionMsg, window.location.origin);
+          } catch (e) { /* ignore */ }
+
+          if (notice) notice.textContent = 'Submitted';
+          setTimeout(()=>{ window.close && window.close(); }, 1200);
+        }
+
+        if(questions.length) renderQuestion(0);
+        startTimer();
+        
+        // listen for parent-panel messages (navigate, save-and-next, submit)
+        window.addEventListener('message', function parentCommands(ev){
+          try {
+            const d = ev.data || {};
+            if (!d || !d.type) return;
+            if (d.type === 'navigate-question') {
+              const tgt = Math.max(0, Math.min(questions.length - 1, Number(d.index) || 0));
+              renderQuestion(tgt);
+            } else if (d.type === 'save-and-next') {
+              renderQuestion(Math.min(questions.length - 1, index + 1));
+            } else if (d.type === 'request-submit') {
+              autoSubmit('requested-by-panel');
+            }
+          } catch (e) { /* ignore */ }
+        }, false);
+      } catch (err) {
+        console.error('runner init error', err);
+        document.body.innerHTML = '<pre style="padding:20px;color:#900">Runner init error:\\n'+(err && err.stack?err.stack:err)+'</pre>';
+      }
+    }
+  </script>
+  <script>
+  async function submitAnswers(payload) {
+    try {
+      const resp = await fetch(BACKEND_URL + '/api/student/myexam/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+      const json = await resp.json();
+      // show immediate analysis
+      showResult(json);
+      // optionally notify parent
+      parent.postMessage({ type: 'exam-submitted', server: json, submission_id: payload.submission_id }, window.origin);
+    } catch (err) {
+      console.error('submit failed', err);
+      // fallback to posting to parent for help
+      parent.postMessage({ type: 'exam-submitted', error: String(err), submission_id: payload.submission_id }, window.origin);
+    }
+  }
+
+  function showResult(serverResponse) {
+    try {
+      const result = serverResponse.result || serverResponse;
+      
+      // Create result overlay
+      const overlay = document.createElement('div');
+      overlay.id = 'resultOverlay';
+      overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        animation: fadeIn 0.3s ease;
+      `;
+      
+      // Create result card
+      const card = document.createElement('div');
+      card.style.cssText = `
+        background: white;
+        border-radius: 16px;
+        padding: 40px;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideUp 0.4s ease;
+      `;
+      
+      // Title
+      const title = document.createElement('h2');
+      title.style.cssText = `
+        margin: 0 0 24px 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #0f172a;
+        text-align: center;
+      `;
+      title.textContent = '🎉 Exam Submitted!';
+
+      // ...existing code for card, score, stats, closeBtn...
+
+      // Assemble card
+      card.appendChild(title);
+      card.appendChild(scoreSection);
+      card.appendChild(stats);
+      card.appendChild(closeBtn);
+
+      overlay.appendChild(card);
+      document.body.appendChild(overlay);
+
+      // Add animations
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes slideUp {
+          from { 
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to { 
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+      `;
+      document.head.appendChild(style);
+
+      // Automatically remove the result card after 2 seconds
+      setTimeout(() => {
+        if (overlay && overlay.parentNode) {
+          overlay.parentNode.removeChild(overlay);
+        }
+      }, 2000);
+    } catch (e) {
+      console.error('Error showing result', e);
+    }
+  }
+  </script>
+  <script>
+  // Robust parent reply handler: accept several ack/result shapes so parent variations work
+  window.addEventListener('message', function onParentMessage(ev) {
+    if (!ev || !ev.data) return;
+    const d = ev.data;
+
+    // Accept multiple ACK shapes
+    const isAck =
+      d.type === 'exam-submitted-ack' ||
+      d.type === 'submission_ack' ||
+      d.type === 'ack' ||
+      (d && d.ok === true && d.submission_id); // some parents send success object
+
+    if (isAck) {
+      // clear "waiting for confirmation" UI immediately
+      try {
+        const waitingEl = document.getElementById('submission-waiting') || document.querySelector('.waiting-parent');
+        if (waitingEl) waitingEl.style.display = 'none';
+        // if runner shows modal text, update it to success
+        const msg = document.querySelector('.submission-message');
+        if (msg) msg.textContent = 'Submission received by parent.';
+      } catch (e) { /* ignore */ }
+    }
+
+    // Accept multiple result shapes and render them
+    const isResult =
+      d.type === 'exam-result' ||
+      d.type === 'submission_result' ||
+      d.type === 'exam-submitted-response' ||
+      (d && (d.server || d.result || (d.ok === true && (d.feedback || d.result))));
+
+    if (isResult) {
+      // extract server/result payload
+      const server = d.server || d.result || (d.ok ? d : null);
+      // call your existing runner function that shows result or simply reload UI
+      try {
+        if (typeof showResult === 'function') {
+          showResult(server); // existing function in runner to render analysis
+        } else if (server && server.result) {
+          // fallback: display a simple UI message then close
+          let resultDiv = document.getElementById('resultMessage');
+          if (!resultDiv) {
+            resultDiv = document.createElement('div');
+            resultDiv.id = 'resultMessage';
+            resultDiv.style.position = 'fixed';
+            resultDiv.style.top = '30px';
+            resultDiv.style.left = '50%';
+            resultDiv.style.transform = 'translateX(-50%)';
+            resultDiv.style.background = '#222';
+            resultDiv.style.color = '#fff';
+            resultDiv.style.padding = '18px 32px';
+            resultDiv.style.borderRadius = '10px';
+            resultDiv.style.fontSize = '18px';
+            resultDiv.style.zIndex = 99999;
+            resultDiv.style.boxShadow = '0 4px 24px rgba(0,0,0,0.18)';
+            document.body.appendChild(resultDiv);
+          }
+          resultDiv.innerText = 'Graded: Total ' + (server.result.total_marks ?? server.total_marks ?? 0);
+          setTimeout(() => { resultDiv.remove(); }, 2500);
+        }
+      } catch (e) { console.warn('rendering result failed', e); }
+
+      try { setTimeout(()=> window.close && window.close(), 900); } catch(e){}
+    }
+  }, false);
+  </script>
+</body>
+</html>
